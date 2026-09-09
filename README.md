@@ -20,3 +20,17 @@ Before launch replace sample data, add owner-only analytics access, database bac
 
 Validation: `npm run build`, `npm run lint`, and `node scripts/check-booking.mjs` with the server running. The script books a sample slot and verifies conflict handling and visibility. Test data remains in the local database and is included in insights.
 # Upskilling-Together-Ynha-Nguyen.github.io
+
+## PostHog dashboard scripts
+
+Set `POSTHOG_HOST` (origin only), `POSTHOG_PROJECT_ID`, `POSTHOG_PERSONAL_API_KEY`, `NEXT_PUBLIC_POSTHOG_KEY`, and `NEXT_PUBLIC_POSTHOG_HOST` in the ignored `.env.local`.
+
+- `node scripts/posthog-dashboard.mjs --create` creates/reuses the demo dashboard and enables public sharing. The personal key needs dashboard and insight read/write, query read, and sharing_configuration read/write.
+- `node scripts/posthog-demo.mjs` submits synthetic events, without creating real bookings. Run once; repeated runs add events.
+- `node scripts/posthog-verify.mjs` checks the saved demo queries in the configured project.
+
+The shared demo dashboard filters `abc_dashboard_demo=true`; normal website events are excluded. Keep personal keys and the local booking database out of Git.
+
+## GitHub Pages deployment boundary
+
+The current server-backed app cannot run entirely on GitHub Pages. Pages serves static files and cannot execute `/api/bookings`, `/api/events`, or the SQLite-backed insights page. Deploying there requires a static frontend plus a separately hosted booking/database/email backend; do not enable static export and silently remove booking functionality. The previous Pages workflow has been removed from this checkout pending that deployment work.
